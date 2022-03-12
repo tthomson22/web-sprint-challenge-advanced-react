@@ -1,39 +1,6 @@
 import React from 'react'
-import axios from 'axios'
-
-const URL = 'http://localhost:9000/api/result'
-
-const initialData = {
-  x: 2,
-  y: 2,
-  steps: 0,
-  email: '',
-} 
 
 export default class AppClass extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = initialData
-  }
-
-
-  postData = () => {
-    preventDefault()
-    const newInput = {
-      x: this.state.x,
-      y: this.state.y,
-      steps: this.state.steps,
-      email: this.state.email,
-    }
-    axios.post(URL, newInput)
-      .then(res => {
-        console.log(res.message)
-      })
-      .catch(err => {
-        console.log(err)
-      })
-  }
-
   render() {
     const { className } = this.props
     return (
@@ -63,7 +30,7 @@ export default class AppClass extends React.Component {
           <button id="down">DOWN</button>
           <button id="reset">reset</button>
         </div>
-        <form onSubmit={this.postData}>
+        <form>
           <input id="email" type="email" placeholder="type email"></input>
           <input id="submit" type="submit"></input>
         </form>
