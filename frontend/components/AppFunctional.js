@@ -8,31 +8,36 @@ export default function AppFunctional(props) {
     [3, 4, 5],
     [6, 7, 8]
   ]
-  const [status, setStatus] = useState()
   const [cell, setCell] = useState(4)
   const [count, setCount] = useState(0)
+  const [message, setMessage] = useState('')
+  const [email, setEmail] = useState('')
   const res = getCoordinates(grid, cell)
-
-  const [data, setData] = useState({
-    x: res.x,
-    y: res.y,
-    steps: count,
-    email: ''
-  })
-
 
   function onSubmit(evt){
     evt.preventDefault();
     const useData = {
-      x: data.x,
-      y: data.y,
-      steps: data.count,
-      email: data.email
+      'x': res.x + 1,
+      'y': res.y + 1,
+      'steps': count,
+      'email': email
     }
     axios.post(URL, useData)
       .then((res) => {
-        console.log(res)
+        console.log(res.data)
+        setMessage(res.data.message)
+        setEmail(email)
       })
+      .catch(err => {
+        setMessage(err.response.data.message)
+      })
+      .finally((res) => {
+        setEmail('')
+      })
+  }
+  function onChange(evt){
+    const {value} = evt.target
+    setEmail(value)
   }
 
   // function postMessage() {
@@ -78,23 +83,6 @@ export default function AppFunctional(props) {
     return ''
   }
 
-  function errorMessage(status){
-    if(message === 'left'){
-      return "You can't go left"
-    }
-    else if(message === 'up'){
-      return "You can't go up"
-    }
-    else if(message === 'right'){
-      return "You can't go right"
-    }
-    else if(message === 'down'){
-      return "You can't go down"
-    }
-    else {
-      return ''
-    }
-  }
 
   return (
     <div id="wrapper" className={props.className}>
@@ -114,33 +102,33 @@ export default function AppFunctional(props) {
         <div className={coordinateCheck(2,2)}>{checkB(2,2)}</div>
       </div>
       <div className="info">
-        <h3 id="message">{status}</h3>
+        <h3 id="message">{message}</h3>
       </div>
       <div id="keypad">
         <button onClick={() => {
           cell === 0 || cell === 3 || cell === 6 ? setCell(cell) : setCell(cell - 1); 
           cell === 0 || cell === 3 || cell === 6 ? setCount(count) : setCount(count + 1);
-          cell === 0 || cell === 3 || cell === 6 ? setStatus("You can't go left") : setStatus('')}} 
+          cell === 0 || cell === 3 || cell === 6 ? setMessage("You can't go left") : setMessage('')}} 
           id="left">LEFT</button>
         <button onClick={() => {
-          cell === 0 || cell === 1 || cell === 2 ? errorMessage('up') : setCell(cell - 3);
+          cell === 0 || cell === 1 || cell === 2 ? setCell(cell) : setCell(cell - 3);
           cell === 0 || cell === 1 || cell === 2 ? setCount(count) : setCount(count + 1)
-          cell === 0 || cell === 1 || cell === 2 ? setStatus("You can't go up") : setStatus('')}} 
+          cell === 0 || cell === 1 || cell === 2 ? setMessage("You can't go up") : setMessage('')}} 
           id="up">UP</button>
         <button onClick={() => {
-          cell === 2 || cell === 5 || cell === 8 ? errorMessage('right') : setCell(cell + 1);
+          cell === 2 || cell === 5 || cell === 8 ? setCell(cell) : setCell(cell + 1);
           cell === 2 || cell === 5 || cell === 8 ? setCount(count) : setCount(count + 1)
-          cell === 2 || cell === 5 || cell === 8 ? setStatus("You can't go right") : setStatus('')}} 
+          cell === 2 || cell === 5 || cell === 8 ? setMessage("You can't go right") : setMessage('')}} 
           id="right">RIGHT</button>
         <button onClick={() => {
-          cell === 6 || cell === 7 || cell === 8 ? errorMessage('down') : setCell(cell + 3);
+          cell === 6 || cell === 7 || cell === 8 ? setCell(cell) : setCell(cell + 3);
           cell === 6 || cell === 7 || cell === 8 ? setCount(count) : setCount(count + 1)
-          cell === 6 || cell === 7 || cell === 8 ? setStatus("You can't go down") : setStatus('')}} 
+          cell === 6 || cell === 7 || cell === 8 ? setMessage("You can't go down") : setMessage('')}} 
           id="down">DOWN</button>
-        <button onClick={() => {setCell(4); setCount(0); setStatus('')}} id="reset">reset</button>
+        <button onClick={() => {setCell(4); setCount(0); setMessage('')}} id="reset">reset</button>
       </div>
       <form onSubmit={onSubmit}>
-        <input id="email" type="email" placeholder="type email"></input>
+        <input id="email" type="email" placeholder="type email" onChange={onChange} value={email}></input>
         <input id="submit" type="submit"></input>
       </form>
     </div>
