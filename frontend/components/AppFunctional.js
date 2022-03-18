@@ -13,6 +13,13 @@ export default function AppFunctional(props) {
   const [message, setMessage] = useState('')
   const [email, setEmail] = useState('')
   const res = getCoordinates(grid, cell)
+  
+  function sCheck(steps){
+    if(steps === 1){
+      return ''
+    }
+    return 's'
+  }
 
   function onSubmit(evt){
     evt.preventDefault();
@@ -39,25 +46,6 @@ export default function AppFunctional(props) {
     const {value} = evt.target
     setEmail(value)
   }
-
-  // function postMessage() {
-  //   // const postData = {
-  //   //   x: res.x,
-  //   //   y: res.y,
-  //   //   steps: count,
-  //   //   email: email
-  //   // }
-  //   const postData = {
-  //     x: 1,
-  //     y: 2,
-  //     steps: 3,
-  //     email: "lady@gaga.com"
-  //   }
-  //   axios.post(URL, postData)
-  //     .then(res => {
-  //       console.log(res)
-  //     })
-  // }
   
   function getCoordinates(grid, cell){
     for(let y = 0; y < grid.length; y++) {
@@ -88,7 +76,7 @@ export default function AppFunctional(props) {
     <div id="wrapper" className={props.className}>
       <div className="info">
         <h3 id="coordinates">Coordinates {`(${(res.x)+1},${(res.y)+1})`}</h3>
-        <h3 id="steps">You moved {count} times</h3>
+        <h3 id="steps">You moved {count} time{sCheck(count)}</h3>
       </div>
       <div id="grid">
         <div className={coordinateCheck(0,0)}>{checkB(0,0)}</div>
@@ -125,7 +113,7 @@ export default function AppFunctional(props) {
           cell === 6 || cell === 7 || cell === 8 ? setCount(count) : setCount(count + 1)
           cell === 6 || cell === 7 || cell === 8 ? setMessage("You can't go down") : setMessage('')}} 
           id="down">DOWN</button>
-        <button onClick={() => {setCell(4); setCount(0); setMessage('')}} id="reset">reset</button>
+        <button onClick={() => {setCell(4); setCount(0); setMessage(''); setEmail('')}} id="reset">reset</button>
       </div>
       <form onSubmit={onSubmit}>
         <input id="email" type="email" placeholder="type email" onChange={onChange} value={email}></input>
