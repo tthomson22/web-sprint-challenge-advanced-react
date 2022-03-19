@@ -88,11 +88,36 @@ export default class AppClass extends React.Component {
       return 'square'
     }
 
+    const onSubmit = evt => {
+      evt.preventDefault()
+      const postData = {
+        'x': x,
+        'y': y,
+        'steps': count,
+        'email': email
+      }
+      axios.post('http://localhost:9000/api/result', postData)
+      .then(res=> {
+        this.setState({...this.state, message: res.data.message})
+        this.setState({...this.state, email: ''})
+      })
+      .catch(err=> {
+        this.setState({...this.state, message: err.response.data.message})
+      })
+      this.setState({
+        email: ''
+      })
+    }
+    const onChange = evt => {
+      const {value} = evt.target
+      this.setState({...this.state, email: value})
+    }
+
     return (
       <div id="wrapper" className={className}>
         <div className="info">
           <h3 id="coordinates">Coordinates {`(${x},${y})`}</h3>
-          <h3 id="steps">You moved {count} times</h3>
+          <h3 id="steps">You moved {count} time{count === 1 ? '' : 's'}</h3>
         </div>
         <div id="grid">
           <div className={coordinateCheck(1,1)}>{coordinateCheck(1,1) === 'square active' ? 'B' : ''}</div>
@@ -115,8 +140,8 @@ export default class AppClass extends React.Component {
           <button onClick={() => mover('down')} id="down">DOWN</button>
           <button onClick={() => mover('reset')} id="reset">reset</button>
         </div>
-        <form>
-          <input id="email" type="email" placeholder="type email"></input>
+        <form onSubmit={onSubmit}>
+          <input id="email" type="email" placeholder="type email" onChange={onChange} value={this.state.email}></input>
           <input id="submit" type="submit"></input>
         </form>
       </div>
